@@ -1,0 +1,70 @@
+{
+  "_version": "1.32.0",
+  "sap.app": {
+    "id": "com.todoapp",
+    "type": "application",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "Todo Application",
+    "description": "SAPUI5 Frontend for Todo API"
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "com.todoapp.view.App",
+      "type": "XML",
+      "id": "appView",
+      "async": true
+    },
+    "dependencies": {
+      "minUI5Version": "1.108.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {}
+      }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "com.todoapp.i18n.i18n"
+        }
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "com.todoapp.view",
+        "controlId": "appView",
+        "controlAggregation": "pages",
+        "async": true
+      },
+      "routes": [
+        {
+          "pattern": "",
+          "name": "home",
+          "target": "home"
+        },
+        {
+          "pattern": "detail/{id}",
+          "name": "detail",
+          "target": "detail"
+        }
+      ],
+      "targets": {
+        "home": {
+          "viewName": "App",
+          "viewId": "appView",
+          "viewLevel": 1
+        },
+        "detail": {
+          "viewName": "Detail",
+          "viewId": "detailView",
+          "viewLevel": 2
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "todo-sapui5-app",
+  "version": "1.0.0",
+  "description": "Frontend SAPUI5 para Todo API",
+  "private": true,
+  "scripts": {
+    "start": "ui5 serve -o index.html",
+    "build": "ui5 build",
+    "deploy": "ui5 build --clean-dest --dest dist"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "ui5-middleware-livereload": "^3.2.0"
+  },
+  "ui5": {
+    "dependencies": [
+      "sap.ui.core",
+      "sap.m",
+      "sap.ui.layout"
+    ]
+  }
+}

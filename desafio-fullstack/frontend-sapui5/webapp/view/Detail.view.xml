@@ -1,0 +1,76 @@
+<mvc:View
+    controllerName="com.todoapp.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    displayBlock="true">
+    
+    <Page
+        id="detailPage"
+        title="Todo Details"
+        showNavButton="true"
+        navButtonPress=".onNavBack">
+        
+        <headerContent>
+            <Button
+                icon="sap-icon://refresh"
+                tooltip="Refresh details"
+                press=".onRefresh"/>
+        </headerContent>
+        
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <BusyIndicator
+                    text="Loading details..."
+                    visible="{todoModel>/busy}"
+                    class="sapUiSmallMarginBottom"/>
+                
+                <f:SimpleForm
+                    editable="false"
+                    layout="ResponsiveGridLayout"
+                    title="Todo Information"
+                    labelSpanXL="4"
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    labelSpanS="12"
+                    adjustLabelSpan="false"
+                    emptySpanXL="0"
+                    emptySpanL="0"
+                    emptySpanM="0"
+                    emptySpanS="0"
+                    columnsXL="2"
+                    columnsL="2"
+                    columnsM="2">
+                    
+                    <f:content>
+                        <Label text="ID"/>
+                        <Text text="{todoModel>/selectedTodo/id}"/>
+                        
+                        <Label text="User ID"/>
+                        <Text text="{todoModel>/selectedTodo/userId}"/>
+                        
+                        <Label text="Title"/>
+                        <Text text="{todoModel>/selectedTodo/title}" 
+                              class="{= ${todoModel>/selectedTodo/completed} ? 'completed-task' : '' }"/>
+                        
+                        <Label text="Status"/>
+                        <ObjectStatus
+                            text="{= ${todoModel>/selectedTodo/completed} ? 'Completed' : 'Incomplete' }"
+                            state="{= ${todoModel>/selectedTodo/completed} ? 'Success' : 'Warning' }"/>
+                        
+                        <Label text="Can toggle to incomplete?"/>
+                        <ObjectStatus
+                            text="{= ${todoModel>/selectedTodo/completed} ? 'Check limit rules' : 'Yes' }"
+                            state="{= ${todoModel>/selectedTodo/completed} ? 'Information' : 'None' }"/>
+                    </f:content>
+                </f:SimpleForm>
+                
+                <Panel headerText="Business Rule Info" expandable="true" expanded="false">
+                    <Text text="Each user can have maximum 5 incomplete todos. If a user tries to mark a 6th todo as incomplete, the API will return HTTP 400 error." 
+                          class="sapUiSmallMargin"/>
+                </Panel>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>
