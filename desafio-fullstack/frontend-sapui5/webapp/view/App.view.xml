@@ -6,160 +6,162 @@
     displayBlock="true"
     height="100%">
     
-        <!-- Página Principal -->
-        <App id="app">
-            <Page 
-                title="📋 Todo Application"
-                showHeader="true"
-                enableScrolling="true"
-                backgroundDesign="Solid">
-        
-        <!-- Header com botão de Sync -->
-        <headerContent>
-            <Button 
-                icon="sap-icon://refresh"
-                text="Sync"
-                type="Emphasized"
-                tooltip="Synchronize with external API"
-                press=".onSync"/>
-        </headerContent>
-        
-        <!-- Barra de Busca -->
-        <subHeader>
-            <Toolbar>
-                <SearchField
-                    width="100%"
-                    placeholder="Search todos by title..."
-                    search=".onSearch"
-                    liveChange=".onLiveSearch"
-                    showSearchButton="true"
-                    value="{todoModel>/search}"/>
-            </Toolbar>
-        </subHeader>
-        
-        <!-- Conteúdo Principal -->
-        <content>
-            <VBox class="sapUiSmallMargin">
-                
-                <!-- Busy Indicator -->
-                <BusyIndicator
-                    id="busyIndicator"
-                    text="Loading todos..."
-                    class="sapUiSmallMarginBottom"
-                    visible="{todoModel>/busy}"/>
-                
-                <!-- Mensagem Informativa -->
-                <MessageStrip
-                    text="Total: {todoModel>/totalCount} todos | Page {todoModel>/page} of {todoModel>/totalPages}"
-                    type="Information"
-                    showIcon="true"
-                    class="sapUiSmallMarginBottom"
-                    visible="{= ${todoModel>/totalCount} > 0 }"/>
-                
-                <!-- Lista de Todos -->
-                <List
-                    id="todoList"
-                    items="{todoModel>/items}"
-                    mode="SingleSelectMaster"
-                    selectionChange=".onSelectionChange"
-                    noDataText="No todos found. Click Sync to load data.">
-                    
-                    <!-- Header da Lista -->
-                    <headerToolbar>
-                        <OverflowToolbar>
-                            <Title text="Todos" level="H2"/>
-                            <ToolbarSpacer/>
-                            <Button 
-                                icon="sap-icon://sort"
-                                text="Sort by {todoModel>/sortBy}"
-                                type="Transparent"
-                                press=".onSort"/>
-                        </OverflowToolbar>
-                    </headerToolbar>
-                    
-                    <!-- Template para cada Item -->
-                    <items>
-                        <CustomListItem type="Active">
-                            <HBox alignItems="Center" class="sapUiSmallMargin">
-                                <!-- Checkbox de Status -->
-                                <CheckBox
-                                    selected="{todoModel>completed}"
-                                    select=".onToggleComplete"
-                                    enabled="true"
-                                    tooltip="Mark as complete/incomplete"/>
-                                
-                                <!-- Informações do Todo -->
-                                <VBox class="sapUiSmallMarginBegin" width="100%">
-                                    <ObjectIdentifier
-                                        title="{todoModel>title}"
-                                        class="{= ${todoModel>completed} ? 'completed-task' : null }"
-                                        titleActive="true"
-                                        titlePress=".onViewDetails"/>
-                                    <HBox>
-                                        <Label text="User:" design="Bold" class="sapUiTinyMarginEnd"/>
-                                        <Text text="{todoModel>userId}"/>
-                                        <Label text="ID:" design="Bold" class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
-                                        <Text text="{todoModel>id}"/>
-                                    </HBox>
-                                </VBox>
-                                
-                                <!-- Botão de Detalhes -->
-                                <Button
-                                    icon="sap-icon://display"
-                                    type="Transparent"
-                                    tooltip="View Details"
-                                    press=".onViewDetails"/>
-                            </HBox>
-                        </CustomListItem>
-                    </items>
-                </List>
-                
-                <!-- Controles de Paginação -->
-                <Toolbar class="sapUiSmallMarginTop">
-                    <ToolbarSpacer/>
-                    
-                    <!-- Botão Página Anterior -->
-                    <Button
-                        icon="sap-icon://slim-arrow-left"
-                        enabled="{= ${todoModel>/page} > 1 }"
-                        tooltip="Previous page"
-                        press=".onPreviousPage"/>
-                    
-                    <!-- Informação de Página -->
-                    <Text text="Page {todoModel>/page} of {todoModel>/totalPages}" 
-                          class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
-                    
-                    <!-- Botão Próxima Página -->
-                    <Button
-                        icon="sap-icon://slim-arrow-right"
-                        enabled="{= ${todoModel>/page} &lt; ${todoModel>/totalPages} }"
-                        tooltip="Next page"
-                        press=".onNextPage"/>
-                    
-                    <!-- Seletor de Itens por Página -->
-                    <Label text="Items per page:" class="sapUiTinyMarginBegin"/>
-                    <Select
-                        selectedKey="{todoModel>/pageSize}"
-                        change=".onPageSizeChange"
-                        width="80px">
-                        <core:Item key="5" text="5"/>
-                        <core:Item key="10" text="10"/>
-                        <core:Item key="20" text="20"/>
-                        <core:Item key="50" text="50"/>
-                    </Select>
+    <App id="app">
+        <Page 
+            title="📋 Aplicação de Tarefas"
+            showHeader="true"
+            enableScrolling="true"
+            backgroundDesign="Solid">
+    
+            <!-- Barra de Busca -->
+            <subHeader>
+                <Toolbar>
+                    <SearchField
+                        width="100%"
+                        placeholder="Pesquisar tarefas por título..."
+                        search=".onSearch"
+                        liveChange=".onLiveSearch"
+                        showSearchButton="true"
+                        value="{todoModel>/search}"/>
                 </Toolbar>
-            </VBox>
-        </content>
-        
-        <!-- Rodapé -->
-        <footer>
-            <Toolbar>
-                <ToolbarSpacer/>
-                <Text text="Backend API: http://localhost:5001" class="sapUiTinyMarginEnd"/>
-                <Text text="SAPUI5 Version: 1.108.0"/>
-                <ToolbarSpacer/>
-            </Toolbar>
-        </footer>
-            </Page>
-        </App>
+            </subHeader>
+            
+            <!-- Conteúdo Principal -->
+            <content>
+                <VBox class="sapUiSmallMargin">
+                    
+                    <!-- Indicador de Carregamento -->
+                    <BusyIndicator
+                        id="busyIndicator"
+                        text="Carregando tarefas..."
+                        class="sapUiSmallMarginBottom"
+                        visible="{todoModel>/busy}"/>
+                    
+                    <!-- Mensagem Informativa -->
+                    <MessageStrip
+                        text="Total: {todoModel>/totalCount} tarefas | Página {todoModel>/page} de {todoModel>/totalPages}"
+                        type="Information"
+                        showIcon="true"
+                        visible="{= ${todoModel>/totalCount} > 0 }"/>
+                    
+                    <!-- Lista de Todos -->
+                    <List
+                        id="todoList"
+                        items="{todoModel>/items}"
+                        mode="SingleSelectMaster"
+                        selectionChange=".onSelectionChange"
+                        noDataText="Nenhuma tarefa encontrada. Clique em Sincronizar para carregar dados.">
+                        
+                        <!-- Header da Lista -->
+                        <headerToolbar>
+                            <OverflowToolbar>
+                                <Title text="Tarefas" level="H2"/>
+                                <ToolbarSpacer/>
+                                <Button 
+                                    icon="sap-icon://sort"
+                                    text="Ordenar por {todoModel>/sortBy}"
+                                    type="Transparent"
+                                    press=".onSort"/>
+                                <Button
+                                    icon="sap-icon://accept"
+                                    text="Alternar status"
+                                    type="Transparent"
+                                    press=".onToggleSelectedStatus"/>
+                                <Button
+                                    icon="sap-icon://add"
+                                    text="Adicionar"
+                                    type="Emphasized"
+                                    press=".onAddTodo"/>
+                                <Button
+                                    icon="sap-icon://delete"
+                                    text="Remover"
+                                    type="Reject"
+                                    press=".onRemoveTodo"/>
+                            </OverflowToolbar>
+                        </headerToolbar>
+                        
+                        <!-- Template para cada Item -->
+                        <items>
+                            <CustomListItem type="Active">
+                                <HBox alignItems="Center" class="sapUiSmallMargin">
+                                    <!-- Checkbox de Status -->
+                                    <CheckBox
+                                        selected="{todoModel>completed}"
+                                        select=".onToggleComplete"
+                                        enabled="true"
+                                        tooltip="Marcar como concluída/incompleta"/>
+                                    
+                                    <!-- Informações do Todo -->
+                                    <VBox class="sapUiSmallMarginBegin" width="100%">
+                                        <ObjectIdentifier
+                                            title="{todoModel>title}"
+                                            titleActive="true"
+                                            titlePress=".onViewDetails"/>
+                                        <HBox>
+                                            <Label text="Usuário:" design="Bold" class="sapUiTinyMarginEnd"/>
+                                            <Text text="{todoModel>userId}"/>
+                                            <Label text="ID:" design="Bold" class="sapUiTinyMarginBegin"/>
+                                            <Text text="{todoModel>id}"/>
+                                        </HBox>
+                                    </VBox>
+                                    
+                                    <!-- Botão de Detalhes -->
+                                    <Button
+                                        icon="sap-icon://display"
+                                        type="Transparent"
+                                        tooltip="Ver detalhes"
+                                        press=".onViewDetails"/>
+                                </HBox>
+                            </CustomListItem>
+                        </items>
+                    </List>
+                    
+                    <!-- Controles de Paginação -->
+                    <Toolbar class="sapUiSmallMarginTop">
+                        <ToolbarSpacer/>
+                        
+                        <!-- Botão Página Anterior -->
+                        <Button
+                            icon="sap-icon://slim-arrow-left"
+                            enabled="{= ${todoModel>/page} > 1 }"
+                            tooltip="Página anterior"
+                            press=".onPreviousPage"/>
+                        
+                        <!-- Informação de Página -->
+                          <Text text="Página {todoModel>/page} de {todoModel>/totalPages}" 
+                              class="sapUiTinyMarginBegin"/>
+                        
+                        <!-- Botão Próxima Página -->
+                        <Button
+                            icon="sap-icon://slim-arrow-right"
+                            enabled="{= ${todoModel>/page} &lt; ${todoModel>/totalPages} }"
+                            tooltip="Próxima página"
+                            press=".onNextPage"/>
+                        
+                        <!-- Seletor de Itens por Página -->
+                        <Label text="Itens por página:" class="sapUiTinyMarginBegin"/>
+                        <Select
+                            selectedKey="{todoModel>/pageSize}"
+                            change=".onPageSizeChange"
+                            width="80px">
+                            <core:Item key="5" text="5"/>
+                            <core:Item key="10" text="10"/>
+                            <core:Item key="20" text="20"/>
+                            <core:Item key="50" text="50"/>
+                        </Select>
+                    </Toolbar>
+                </VBox>
+            </content>
+            
+            <!-- Rodapé -->
+            <footer>
+                <Toolbar>
+                    <ToolbarSpacer/>
+                    <Text text="API Backend: http://localhost:5001" class="sapUiTinyMarginEnd"/>
+                    <Text text="Versão SAPUI5: 1.108.0"/>
+                    <ToolbarSpacer/>
+                </Toolbar>
+            </footer>
+        </Page>
+    </App>
 </mvc:View>

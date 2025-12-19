@@ -25,7 +25,9 @@ namespace TodoApi.Services
             // Aplicar filtros
             if (!string.IsNullOrEmpty(queryParams.Title))
             {
-                query = query.Where(t => t.Title.Contains(queryParams.Title));
+                // Make search case-insensitive by comparing lower-cased values
+                var lowerTitle = queryParams.Title.ToLower();
+                query = query.Where(t => t.Title.ToLower().Contains(lowerTitle));
             }
             
             if (queryParams.UserId.HasValue)
@@ -103,10 +105,14 @@ namespace TodoApi.Services
             }
             
             // Validar regra de negócio: máximo 5 tarefas incompletas por usuário
+            // Se a atualização estiver marcando a tarefa como incompleta (Completed == false)
+            // devemos impedir a operação somente quando o usuário já possui 5 tarefas
+            // incompletas e esta tarefa atualmente está marcada como concluída (ou seja,
+            // a operação aumentaria o número de incompletas).
             if (!updateDto.Completed)
             {
                 var incompleteCount = await CountIncompleteTodosByUserAsync(todo.UserId);
-                if (incompleteCount >= 5 && !todo.Completed)
+                if (incompleteCount >= 5 && todo.Completed)
                 {
                     throw new InvalidOperationException(
                         $"User {todo.UserId} already has 5 incomplete todos. " +
@@ -128,7 +134,7 @@ namespace TodoApi.Services
             };
         }
         
-        public async Task<int> SyncTodosAsync()
+        public async Task<int> SyncTodosAsync(int userId)
         {
             try
             {
@@ -151,8 +157,8 @@ namespace TodoApi.Services
                     .Where(et => !existingIds.Contains(et.Id))
                     .Select(et => new Todo
                     {
-                        Id = et.Id,
-                        UserId = et.UserId,
+                        // Associate synced todos to the current authenticated user
+                        UserId = userId,
                         Title = et.Title,
                         Completed = et.Completed,
                         CreatedAt = DateTime.UtcNow
@@ -170,6 +176,57 @@ namespace TodoApi.Services
                 _logger.LogError(ex, "Error syncing todos");
                 throw;
             }
+        }
+
+        public async Task<TodoDto> CreateTodoAsync(CreateTodoDto createDto)
+        {
+            try
+            {
+                // Validar regra de negócio: máximo 5 tarefas incompletas por usuário
+                if (!createDto.Completed)
+                {
+                    var canAdd = await CanUserHaveMoreIncompleteTodosAsync(createDto.UserId);
+                    if (!canAdd)
+                    {
+                        throw new InvalidOperationException($"User {createDto.UserId} already has 5 incomplete todos. Complete some before adding another.");
+                    }
+                }
+
+                var todo = new Todo
+                {
+                    UserId = createDto.UserId,
+                    Title = createDto.Title,
+                    Completed = createDto.Completed,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _context.Todos.AddAsync(todo);
+                await _context.SaveChangesAsync();
+
+                return new TodoDto
+                {
+                    Id = todo.Id,
+                    UserId = todo.UserId,
+                    Title = todo.Title,
+                    Completed = todo.Completed
+                };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task DeleteTodoAsync(int id)
+        {
+            var todo = await _context.Todos.FindAsync(id);
+            if (todo == null)
+            {
+                throw new KeyNotFoundException($"Todo with id {id} not found");
+            }
+
+            _context.Todos.Remove(todo);
+            await _context.SaveChangesAsync();
         }
         
         public async Task<bool> CanUserHaveMoreIncompleteTodosAsync(int userId)

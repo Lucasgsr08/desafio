@@ -6,8 +6,8 @@
     "applicationVersion": {
       "version": "1.0.0"
     },
-    "title": "Todo Application",
-    "description": "SAPUI5 Frontend for Todo API"
+    "title": "Aplicação de Tarefas",
+    "description": "Frontend SAPUI5 para API de Tarefas"
   },
   "sap.ui5": {
     "rootView": {
@@ -48,6 +48,16 @@
           "target": "home"
         },
         {
+          "pattern": "login",
+          "name": "login",
+          "target": "login"
+        },
+        {
+          "pattern": "register",
+          "name": "register",
+          "target": "register"
+        },
+        {
           "pattern": "detail/{id}",
           "name": "detail",
           "target": "detail"
@@ -56,8 +66,15 @@
       "targets": {
         "home": {
           "viewName": "App",
-          "viewId": "appView",
           "viewLevel": 1
+        },
+        "login": {
+          "viewName": "Login",
+          "viewLevel": 0
+        },
+        "register": {
+          "viewName": "Register",
+          "viewLevel": 0
         },
         "detail": {
           "viewName": "Detail",

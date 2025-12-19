@@ -8,7 +8,9 @@ namespace TodoApi.Services
         Task<PaginatedResponse<TodoDto>> GetTodosAsync(TodoQueryParams queryParams);
         Task<TodoDto?> GetTodoByIdAsync(int id);
         Task<TodoDto> UpdateTodoAsync(int id, UpdateTodoDto updateDto);
-        Task<int> SyncTodosAsync();
+        Task<TodoDto> CreateTodoAsync(CreateTodoDto createDto);
+        Task DeleteTodoAsync(int id);
+        Task<int> SyncTodosAsync(int userId);
         Task<bool> CanUserHaveMoreIncompleteTodosAsync(int userId);
         Task<int> CountIncompleteTodosByUserAsync(int userId);
     }

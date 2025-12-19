@@ -6,6 +6,7 @@ namespace TodoApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public class TodosController : ControllerBase
     {
         private readonly ITodoService _todoService;
@@ -24,7 +25,6 @@ namespace TodoApi.Controllers
             [FromQuery] string? title = null,
             [FromQuery] string? sort = "id",
             [FromQuery] string? order = "asc",
-            [FromQuery] int? userId = null,
             [FromQuery] bool? completed = null)
         {
             try
@@ -36,7 +36,8 @@ namespace TodoApi.Controllers
                     Title = title,
                     SortBy = sort,
                     Order = order,
-                    UserId = userId,
+                    // Force to current authenticated user
+                    UserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"),
                     Completed = completed
                 };
                 
@@ -56,12 +57,11 @@ namespace TodoApi.Controllers
             try
             {
                 var todo = await _todoService.GetTodoByIdAsync(id);
-                
-                if (todo == null)
+                if (todo == null || todo.UserId != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
                 {
                     return NotFound($"Todo with id {id} not found");
                 }
-                
+
                 return Ok(todo);
             }
             catch (Exception ex)
@@ -76,6 +76,12 @@ namespace TodoApi.Controllers
         {
             try
             {
+                var existing = await _todoService.GetTodoByIdAsync(id);
+                if (existing == null || existing.UserId != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
+                {
+                    return NotFound($"Todo with id {id} not found");
+                }
+
                 var updatedTodo = await _todoService.UpdateTodoAsync(id, updateDto);
                 return Ok(updatedTodo);
             }
@@ -99,7 +105,8 @@ namespace TodoApi.Controllers
         {
             try
             {
-                var count = await _todoService.SyncTodosAsync();
+                var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+                var count = await _todoService.SyncTodosAsync(currentUserId);
                 return Ok(new { message = $"Synced {count} new todos" });
             }
             catch (Exception ex)
@@ -108,14 +115,69 @@ namespace TodoApi.Controllers
                 return StatusCode(500, "An error occurred while syncing todos");
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<TodoDto>> CreateTodo([FromBody] CreateTodoDto createDto)
+        {
+            try
+            {
+                var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+                // Force created todo to belong to current user
+                createDto.UserId = currentUserId;
+
+                var created = await _todoService.CreateTodoAsync(createDto);
+                return CreatedAtAction(nameof(GetTodo), new { id = created.Id }, created);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating todo");
+                return StatusCode(500, "An error occurred while creating the todo");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteTodo(int id)
+        {
+            try
+            {
+                var existing = await _todoService.GetTodoByIdAsync(id);
+                var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+                if (existing == null || existing.UserId != currentUserId)
+                {
+                    return NotFound($"Todo with id {id} not found");
+                }
+
+                await _todoService.DeleteTodoAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting todo with id {id}");
+                return StatusCode(500, "An error occurred while deleting the todo");
+            }
+        }
         
         [HttpGet("users/{userId}/can-add-incomplete")]
         public async Task<ActionResult> CanUserAddIncompleteTodo(int userId)
         {
             try
             {
-                var canAdd = await _todoService.CanUserHaveMoreIncompleteTodosAsync(userId);
-                return Ok(new { userId, canAdd, maxIncomplete = 5 });
+                var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
+                if (currentUserId != userId)
+                {
+                    return Forbid();
+                }
+
+                var canAdd = await _todoService.CanUserHaveMoreIncompleteTodosAsync(currentUserId);
+                return Ok(new { userId = currentUserId, canAdd, maxIncomplete = 5 });
             }
             catch (Exception ex)
             {

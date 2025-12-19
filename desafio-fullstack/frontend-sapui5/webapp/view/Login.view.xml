@@ -1,0 +1,12 @@
+<mvc:View controllerName="com.todoapp.controller.Login" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page title="Login" showNavButton="false" class="sapUiResponsivePadding">
+    <content>
+      <VBox class="sapUiSmallMargin">
+        <Input id="username" placeholder="Usuário" liveChange="onLiveChange" />
+        <Input id="password" placeholder="Senha" type="Password" liveChange="onLiveChange" />
+        <Button text="Entrar" press="onLogin" type="Emphasized" id="loginButton" />
+        <Link text="Criar nova conta" press="onNavToRegister" class="sapUiSmallMarginTop" />
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

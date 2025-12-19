@@ -8,28 +8,28 @@
     
     <Page
         id="detailPage"
-        title="Todo Details"
+        title="Detalhes da Tarefa"
         showNavButton="true"
-        navButtonPress=".onNavBack">
+        navButtonPress="onNavBack">
         
         <headerContent>
             <Button
                 icon="sap-icon://refresh"
-                tooltip="Refresh details"
+                tooltip="Atualizar detalhes"
                 press=".onRefresh"/>
         </headerContent>
         
         <content>
             <VBox class="sapUiSmallMargin">
                 <BusyIndicator
-                    text="Loading details..."
+                    text="Carregando detalhes..."
                     visible="{todoModel>/busy}"
                     class="sapUiSmallMarginBottom"/>
                 
                 <f:SimpleForm
                     editable="false"
                     layout="ResponsiveGridLayout"
-                    title="Todo Information"
+                    title="Informações da Tarefa"
                     labelSpanXL="4"
                     labelSpanL="4"
                     labelSpanM="4"
@@ -47,27 +47,27 @@
                         <Label text="ID"/>
                         <Text text="{todoModel>/selectedTodo/id}"/>
                         
-                        <Label text="User ID"/>
+                        <Label text="ID do Usuário"/>
                         <Text text="{todoModel>/selectedTodo/userId}"/>
                         
-                        <Label text="Title"/>
+                        <Label text="Título"/>
                         <Text text="{todoModel>/selectedTodo/title}" 
                             class="{= ${todoModel>/selectedTodo/completed} ? 'completed-task' : null }"/>
                         
                         <Label text="Status"/>
                         <ObjectStatus
-                            text="{= ${todoModel>/selectedTodo/completed} ? 'Completed' : 'Incomplete' }"
+                            text="{= ${todoModel>/selectedTodo/completed} ? 'Concluída' : 'Incompleta' }"
                             state="{= ${todoModel>/selectedTodo/completed} ? 'Success' : 'Warning' }"/>
                         
-                        <Label text="Can toggle to incomplete?"/>
+                        <Label text="Pode marcar como incompleta?"/>
                         <ObjectStatus
-                            text="{= ${todoModel>/selectedTodo/completed} ? 'Check limit rules' : 'Yes' }"
+                            text="{= ${todoModel>/selectedTodo/completed} ? 'Verificar limite' : 'Sim' }"
                             state="{= ${todoModel>/selectedTodo/completed} ? 'Information' : 'None' }"/>
                     </f:content>
                 </f:SimpleForm>
                 
-                <Panel headerText="Business Rule Info" expandable="true" expanded="false">
-                    <Text text="Each user can have maximum 5 incomplete todos. If a user tries to mark a 6th todo as incomplete, the API will return HTTP 400 error." 
+                <Panel headerText="Informações de Regras de Negócio" expandable="true" expanded="false">
+                    <Text text="Cada usuário pode ter no máximo 5 tarefas incompletas. Se um usuário tentar marcar uma 6ª tarefa como incompleta, a API retornará um erro HTTP 400." 
                           class="sapUiSmallMargin"/>
                 </Panel>
             </VBox>

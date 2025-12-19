@@ -1,0 +1,13 @@
+<mvc:View controllerName="com.todoapp.controller.Register" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+  <Page title="Criar Conta" showNavButton="true" navButtonPress="onNavBack" class="sapUiResponsivePadding">
+    <content>
+      <VBox class="sapUiSmallMargin">
+        <Input id="newUsername" placeholder="Usuário" liveChange="onLiveChange" />
+        <Input id="newPassword" placeholder="Senha" type="Password" liveChange="onLiveChange" />
+        <Input id="confirmPassword" placeholder="Confirmar Senha" type="Password" liveChange="onLiveChange" />
+        <Button text="Registrar" press="onRegister" type="Emphasized" />
+        <Link text="Já tem conta? Faça login" press="onNavToLogin" />
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>
