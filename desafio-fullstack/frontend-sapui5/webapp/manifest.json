@@ -37,7 +37,7 @@
         "routerClass": "sap.m.routing.Router",
         "viewType": "XML",
         "viewPath": "com.todoapp.view",
-        "controlId": "appView",
+        "controlId": "app",
         "controlAggregation": "pages",
         "async": true
       },

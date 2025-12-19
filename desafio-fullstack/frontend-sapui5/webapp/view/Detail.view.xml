@@ -52,7 +52,7 @@
                         
                         <Label text="Title"/>
                         <Text text="{todoModel>/selectedTodo/title}" 
-                              class="{= ${todoModel>/selectedTodo/completed} ? 'completed-task' : '' }"/>
+                            class="{= ${todoModel>/selectedTodo/completed} ? 'completed-task' : null }"/>
                         
                         <Label text="Status"/>
                         <ObjectStatus

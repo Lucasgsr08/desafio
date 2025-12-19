@@ -11,7 +11,7 @@ sap.ui.define(
     return UIComponent.extend("com.todoapp.Component", {
       // Metadados - link para o manifesto
       metadata: {
-        manifest: "manifest.json",
+        manifest: "json",
       },
 
       // Inicialização do componente
@@ -38,8 +38,17 @@ sap.ui.define(
         });
         this.setModel(oTodoModel, "todoModel");
 
-        // 4. Inicializa o roteador
-        this.getRouter().initialize();
+        // 4. Inicializa o roteador (protegido para evitar inicialização dupla)
+        try {
+          if (this.getRouter && !this._routerInitialized) {
+            this.getRouter().initialize();
+            this._routerInitialized = true;
+          }
+        } catch (e) {
+          // Não falhar em ambiente de dev; log e continuar
+          /* eslint-disable no-console */
+          console.warn("Router init warning:", e);
+        }
 
         console.log("✅ Componente TodoApp inicializado");
       },

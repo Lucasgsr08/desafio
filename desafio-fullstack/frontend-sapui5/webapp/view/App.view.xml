@@ -6,12 +6,13 @@
     displayBlock="true"
     height="100%">
     
-    <!-- Página Principal -->
-    <Page 
-        title="📋 Todo Application"
-        showHeader="true"
-        enableScrolling="true"
-        backgroundDesign="Solid">
+        <!-- Página Principal -->
+        <App id="app">
+            <Page 
+                title="📋 Todo Application"
+                showHeader="true"
+                enableScrolling="true"
+                backgroundDesign="Solid">
         
         <!-- Header com botão de Sync -->
         <headerContent>
@@ -91,13 +92,13 @@
                                 <VBox class="sapUiSmallMarginBegin" width="100%">
                                     <ObjectIdentifier
                                         title="{todoModel>title}"
-                                        class="{= ${todoModel>completed} ? 'completed-task' : '' }"
+                                        class="{= ${todoModel>completed} ? 'completed-task' : null }"
                                         titleActive="true"
                                         titlePress=".onViewDetails"/>
                                     <HBox>
-                                        <Text text="User:" design="Bold" class="sapUiTinyMarginEnd"/>
+                                        <Label text="User:" design="Bold" class="sapUiTinyMarginEnd"/>
                                         <Text text="{todoModel>userId}"/>
-                                        <Text text="ID:" design="Bold" class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
+                                        <Label text="ID:" design="Bold" class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
                                         <Text text="{todoModel>id}"/>
                                     </HBox>
                                 </VBox>
@@ -131,7 +132,7 @@
                     <!-- Botão Próxima Página -->
                     <Button
                         icon="sap-icon://slim-arrow-right"
-                        enabled="{= ${todoModel>/page} < ${todoModel>/totalPages} }"
+                        enabled="{= ${todoModel>/page} &lt; ${todoModel>/totalPages} }"
                         tooltip="Next page"
                         press=".onNextPage"/>
                     
@@ -159,5 +160,6 @@
                 <ToolbarSpacer/>
             </Toolbar>
         </footer>
-    </Page>
+            </Page>
+        </App>
 </mvc:View>

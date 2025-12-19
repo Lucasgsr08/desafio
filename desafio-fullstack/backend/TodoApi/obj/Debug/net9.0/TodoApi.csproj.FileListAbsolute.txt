@@ -166,3 +166,4 @@ C:\Users\l_gab\Desktop\PROGRAMACAO\dotnet\desafio\desafio-fullstack\backend\Todo
 C:\Users\l_gab\Desktop\PROGRAMACAO\dotnet\desafio\desafio-fullstack\backend\TodoApi\obj\Debug\net9.0\TodoApi.pdb
 C:\Users\l_gab\Desktop\PROGRAMACAO\dotnet\desafio\desafio-fullstack\backend\TodoApi\obj\Debug\net9.0\TodoApi.genruntimeconfig.cache
 C:\Users\l_gab\Desktop\PROGRAMACAO\dotnet\desafio\desafio-fullstack\backend\TodoApi\obj\Debug\net9.0\ref\TodoApi.dll
+C:\Users\l_gab\Desktop\PROGRAMACAO\dotnet\desafio\desafio-fullstack\backend\TodoApi\obj\Debug\net9.0\TodoApi.sourcelink.json
